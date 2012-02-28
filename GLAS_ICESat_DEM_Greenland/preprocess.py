@@ -12,7 +12,7 @@ ftp_url = "ftp://anonymous@sidads.colorado.edu/pub/DATASETS/DEM/nsidc0305_icesat
 def download_and_unpack(url, filename):
     try:
         os.stat(filename)
-        print "File '%s' already exists" % filename
+        print "File '%s' already exists." % filename
     except:
         try:
             os.stat(filename + ".gz")
@@ -20,7 +20,7 @@ def download_and_unpack(url, filename):
             print "Downloading '%s'..." % (filename + '.gz')
             subprocess.call(["wget", "-nc", url + filename + ".gz"])
 
-        print "Unpacking..."
+        print "Unpacking '%s'..." % filename
         subprocess.call(["gunzip", filename + ".gz"])
 
 download_and_unpack(ftp_url, dem_filename)
