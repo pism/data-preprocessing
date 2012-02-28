@@ -1,7 +1,8 @@
 ### A collection of data pre-processing scripts
 
-This repository contains Python and shell scripts for converting publicly-available data from "formats" such as ASCII text, 32-bit big-endian integers, etc into platform-independent NetCDF with embedded metadata.
+This repository contains Python scripts for converting publicly-available data from "formats" such as ASCII text, 32-bit big-endian integers, 4-byte IEEE big-endian float, etc into platform-independent NetCDF with embedded metadata.
 
 ### Contents:
 
 * `GLAS_ICESat_DEM_Greenland/` : [GLAS/ICESat 1 km Laser Altimetry Digital Elevation Model of Greenland](http://nsidc.org/data/nsidc-0305.html)
+* `MEaSUREs_Greenland_Ice_Velocity/` : [MEaSUREs Greenland Ice Velocity Map from InSAR Data](http://nsidc.org/data/docs/measures/nsidc0478_joughin/)
