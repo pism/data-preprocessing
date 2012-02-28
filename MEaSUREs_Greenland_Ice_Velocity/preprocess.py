@@ -60,7 +60,7 @@ y1 = y0 + (shape[0] - 1) * dx
 x = np.linspace(x0, x1, shape[1])
 y = np.linspace(y0, y1, shape[0])
 
-nc = NC("MEASUREs_Greenland_2006_2007.nc", 'w')
+nc = NC("MEASUREs_Greenland_%s.nc" % years, 'w')
 nc.create_dimensions(x, y)
 
 for (filename, short_name, long_name) in [(vx_filename, "vx", "ice surface velocity in the X direction"),
