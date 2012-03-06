@@ -34,23 +34,30 @@ fill_value = -1
 usurf[usurf <= 0] = fill_value
 
 # fill less obvious holes nicely
-def fix_a_hole(i, j, data):
-    # eight neighbors:
-    row = np.array([-1,  0,  1, -1, 1, -1, 0, 1])
-    col = np.array([-1, -1, -1,  0, 0,  1, 1, 1])
-
-    neighborhood = data[j + row, i + col]
-
-    if data[j,i] == fill_value and np.all(neighborhood != fill_value):
-        data[j,i] = neighborhood.sum() / 8.0
 
 shape = (2782, 2611)
 
 usurf = usurf.reshape(shape)
 
-for j in xrange(1,shape[0]-1):
-    for i in xrange(1,shape[1]-1):
-        fix_a_hole(i, j, usurf)
+def fill_holes(data):
+    row = np.array([-1,  0,  1, -1, 1, -1, 0, 1])
+    col = np.array([-1, -1, -1,  0, 0,  1, 1, 1])
+
+    def fix_a_hole(i, j):
+        # grab the 8 immediate neighbors
+        nearest = data[j + row, i + col]
+        # filter out missing ones
+        nearest = nearest[nearest != fill_value]
+
+        if nearest.size > 6:
+            return nearest.sum() / nearest.size
+
+        return fill_value
+
+    for j in xrange(1,shape[0]-1):
+        for i in xrange(1,shape[1]-1):
+            if data[j,i] == fill_value:
+                data[j,i] = fix_a_hole(i, j)
 
 x = np.linspace(-890500., 1720500., shape[1])
 y = np.linspace(-628500., -3410500., shape[0])
