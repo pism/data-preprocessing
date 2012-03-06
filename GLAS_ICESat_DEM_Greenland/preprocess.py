@@ -48,8 +48,8 @@ shape = (2782, 2611)
 
 usurf = usurf.reshape(shape)
 
-for j in xrange(shape[0]):
-    for i in xrange(shape[1]):
+for j in xrange(1,shape[0]-1):
+    for i in xrange(1,shape[1]-1):
         fix_a_hole(i, j, usurf)
 
 x = np.linspace(-890500., 1720500., shape[1])
