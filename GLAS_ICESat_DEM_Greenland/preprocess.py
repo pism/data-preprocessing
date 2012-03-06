@@ -59,6 +59,8 @@ def fill_holes(data):
             if data[j,i] == fill_value:
                 data[j,i] = fix_a_hole(i, j)
 
+fill_holes(usurf)
+
 x = np.linspace(-890500., 1720500., shape[1])
 y = np.linspace(-628500., -3410500., shape[0])
 
