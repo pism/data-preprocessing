@@ -8,9 +8,11 @@ import optparse
 
 ## Set up the option parser
 parser = optparse.OptionParser()
-parser.usage = """usage: %prog start_year
+parser.usage = """usage: %prog [options] start_year
 Here start_year is one of '2000', '2005', '2006'."""
 parser.description = "This script downloads and preprocesses MEaSUREs Greenland Ice Velocity data"
+
+parser.add_option("--add_mask", action="store_true", dest="add_mask", help="Add a mask showing where observations are available")
 
 (options, args) = parser.parse_args()
 
@@ -81,6 +83,19 @@ for (filename, short_name, long_name) in [(vx_filename, "vx", "ice surface veloc
     var = np.fromfile(filename, dtype=">f4", count=-1)
 
     nc.write_2d_field(short_name, var)
+
+# Add a mask that shows where observations are present 
+if options.add_mask == True:
+    nc.define_2d_field("vel_surface_mask", time_dependent = False, nc_type='i',
+                       attrs = {"long_name"   : "Mask observations; 1 where surface vel. available",
+                                "comment"     : "Used as vel_misfit_weight in inversion for tauc",
+                                "units"       : "",
+                                "mapping"     : "mapping",
+                                "_FillValue"  : 0})
+    var = np.fromfile(vx_filename, dtype=">f4", count=-1)
+    mask = var/var
+    mask[var == -2e9] = 0.
+    nc.write_2d_field("vel_surface_mask", mask)
 
 mapping = nc.createVariable("mapping", 'c')
 mapping.grid_mapping_name = "polar_stereographic"
