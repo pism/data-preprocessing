@@ -12,10 +12,11 @@ parser.usage = """usage: %prog [options] start_year
 Here start_year is one of '2000', '2005', '2006'."""
 parser.description = "This script downloads and preprocesses MEaSUREs Greenland Ice Velocity data"
 
+parser.add_option("-o","--output_directory", dest="output_dir", help="Output directory (needs a ", default="")
 parser.add_option("--add_mask", action="store_true", dest="add_mask", help="Add a mask showing where observations are available")
 
 (options, args) = parser.parse_args()
-
+output_dir = options.output_dir
 
 if len(args) == 1 and args[0] in ["2000", "2005", "2006"]:
     start_year = int(args[0])
@@ -30,25 +31,37 @@ vx_filename  = "greenland_vel_mosaic500_%s.vx" % years
 vy_filename  = "greenland_vel_mosaic500_%s.vy" % years
 ftp_url = "ftp://anonymous@sidads.colorado.edu/pub/DATASETS/nsidc0478_MEASURES_greenland_V01/%d/" % start_year
 
-def download_and_unpack(url, filename):
+def download_and_unpack(url, filename, output_dir):
+    if output_dir == "":
+        full_filename = filename
+    else:
+        full_filename = "%s%s" %(output_dir,filename)
+
     try:
-        os.stat(filename)
-        print "File '%s' already exists." % filename
+        os.stat(full_filename)
+        print "File '%s' already exists." % full_filename
     except:
         try:
-            os.stat(filename + ".gz")
+            os.stat(full_filename + ".gz")
         except:
-            print "Downloading '%s'..." % (filename + '.gz')
-            subprocess.call(["wget", "-nc", url + filename + ".gz"])
+            print "Downloading '%s'..." % (full_filename + '.gz')
+            subprocess.call(["wget", "-nc", "--directory-prefix=%s" %output_dir, url + filename + ".gz"])
 
-        print "Unpacking %s..." % filename
-        subprocess.call(["gunzip", filename + ".gz"])
+        print "Unpacking %s..." % full_filename
+        subprocess.call(["gunzip", full_filename + ".gz"])
 
-download_and_unpack(ftp_url, vx_filename)
-download_and_unpack(ftp_url, vx_filename + ".geodat")
-download_and_unpack(ftp_url, vy_filename)
-download_and_unpack(ftp_url, ex_filename)
-download_and_unpack(ftp_url, ey_filename)
+download_and_unpack(ftp_url, vx_filename, output_dir)
+download_and_unpack(ftp_url, vx_filename + ".geodat", output_dir)
+download_and_unpack(ftp_url, vy_filename, output_dir)
+download_and_unpack(ftp_url, ex_filename, output_dir)
+download_and_unpack(ftp_url, ey_filename, output_dir)
+
+if not output_dir == "":
+    ex_filename  = "%sgreenland_vel_mosaic500_%s.ex" % (output_dir,years)
+    ey_filename  = "%sgreenland_vel_mosaic500_%s.ey" % (output_dir,years)
+    vx_filename  = "%sgreenland_vel_mosaic500_%s.vx" % (output_dir,years)
+    vy_filename  = "%sgreenland_vel_mosaic500_%s.vy" % (output_dir,years)
+
 
 grid = np.loadtxt(vx_filename + ".geodat", skiprows=1, comments="&")
 
@@ -62,7 +75,7 @@ y1 = y0 + (shape[0] - 1) * dx
 x = np.linspace(x0, x1, shape[1])
 y = np.linspace(y0, y1, shape[0])
 
-nc = NC("MEASUREs_Greenland_%s.nc" % years, 'w')
+nc = NC("%sMEASUREs_Greenland_%s.nc" % (output_dir,years), 'w')
 nc.create_dimensions(x, y)
 
 for (filename, short_name, long_name) in [(vx_filename, "vx", "ice surface velocity in the X direction"),
