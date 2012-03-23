@@ -71,7 +71,7 @@ class PISMDataset(netCDF.Dataset):
                 continue
             setattr(self.variables[var_name], name, value)
 
-    def define_2d_field(self, var_name, time_dependent = False, dims = None, nc_type = 'f8', attrs = None):
+    def define_2d_field(self, var_name, time_dependent = False, dims = None, nc_type = 'f8', attrs = {}):
         """
         time_dependent: boolean
 
@@ -125,7 +125,7 @@ class PISMDataset(netCDF.Dataset):
         Write a 2D numpy array to a file in a format PISM can read.
         """
 
-        var = self.define_2d_field(var_name, time_dependent, None)
+        var = self.define_2d_field(var_name, time_dependent)
 
         if time_dependent:
             last_record = self.variables['time'].size - 1
