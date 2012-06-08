@@ -26,7 +26,7 @@ else:
 
 vx_filename  = "mosaicOffsets.vx" 
 vy_filename  = "mosaicOffsets.vy" 
-zip_location = "/home2/tmp/GreenlandInSAR/"
+zip_location = "marmaduke.gi.alaska.edu:/home2/tmp/GreenlandInSAR/"
 if start_year == 2000:
     zip_filename = "GreenlandInSARvelocities.tar.gz"
     unpack_cmd = "tar"
@@ -36,12 +36,6 @@ elif start_year == 2007:
     unpack_cmd = "unzip"
     unpack_options = ""
 
-# def download_and_unpack(url, filename, output_dir):
-# if output_dir == "":
-#     full_filename = filename
-# else:
-#     full_filename = "%s%s" %(output_dir,filename)
-
 try:
     os.stat("%s%s" %(output_dir,vx_filename))
     print "File '%s%s' already exists." %(output_dir,vx_filename)
@@ -50,12 +44,11 @@ except:
         os.stat("%s%s" %(output_dir,zip_filename))
     except:
         print "Downloading '%s'..." % (zip_filename)
-        subprocess.call(["cp", zip_location + zip_filename, output_dir])
-#"wget", "-nc", "--directory-prefix=%s" %output_dir, url + filename + ".gz"])
+        os.system("scp " + zip_location + zip_filename + " " + output_dir)
         
     print "Unpacking %s..." % zip_filename
     print "Trying: [" + unpack_cmd+','+unpack_options+','+output_dir + zip_filename+']'
-    subprocess.call([unpack_cmd, unpack_options, output_dir + zip_filename])
+    os.system(unpack_cmd + " " + unpack_options + " " + output_dir + zip_filename + " -d " + output_dir)
 
 if not output_dir == "":
     vx_filename  = "%smosaicOffsets.vx" % output_dir
