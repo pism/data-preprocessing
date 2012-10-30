@@ -119,7 +119,7 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     output_dir = options.output_dir
     
-    if len(args) == 1 and args[0] in ["2000", "2005", "2006"]:
+    if len(args) == 1 and args[0] in ["2000", "2005", "2006","2007","2008"]:
         start_year = int(args[0])
     else:
         parser.print_help()
