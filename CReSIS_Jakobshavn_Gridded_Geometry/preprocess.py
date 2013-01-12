@@ -24,7 +24,7 @@ def download_and_unpack(url, filename, output_dir):
             subprocess.call(["wget", "-nc", "--directory-prefix=%s" %output_dir, url + filename + ".zip"])
 
         print "Unpacking %s..." % full_filename
-        subprocess.call(["tar", "-xf", full_filename + ".zip", "--directory", output_dir])
+        subprocess.call(["unzip", full_filename + ".zip", "-d", output_dir])
 
 # Load CReSIS data and store in variables
 def readComposite(file_name):
